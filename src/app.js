@@ -6,6 +6,7 @@ const createError = require('http-errors');
 const rateLimit = require('express-rate-limit');
 const userRouter = require('./Routers/userRouter');
 const { seedRouter } = require('./Routers/seedRouter');
+const { errResponseHandler } = require('./helper/responseHandler');
 
 const app = express();
 
@@ -53,9 +54,10 @@ app.use((req, res, next) => {
 });
 
 app.use((err, req, res, next) => {
-    res.status(err.status || 500).send({
-        message: err.message || 'Internal Server Error',
-    });
+    return errResponseHandler(res,{
+        status: err.status || 500,
+        message: err.message || 'Internal Server Error'
+    })
 });
 
 module.exports = app;
